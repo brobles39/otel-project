@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.config.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: aws-otel-collector
+  template:
+    metadata:
+      labels:
+        app: aws-otel-collector
+    spec:
+      containers:
+        - name: otel-collector
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          args:
+            - --config=/etc/collector-config.yaml
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.ports.http.port }}
+            - name: metrics
+              containerPort: {{ .Values.service.ports.metrics.port }}
+          volumeMounts:
+            - name: collector-config
+              mountPath: /etc/collector-config.yaml
+              subPath: collector-config.yaml
+          resources:
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+      volumes:
+        - name: collector-config
+          configMap:
+            name: {{ .Values.config.name }}
+            items:
+              - key: otel-collector-config.yaml
+                path: collector-config.yaml

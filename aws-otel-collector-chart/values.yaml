@@ -1,0 +1,25 @@
+namespace: logging
+
+image:
+  repository: public.ecr.aws/aws-observability/aws-otel-collector
+  tag: latest
+
+service:
+  name: aws-otel-collector
+  ports:
+    http:
+      port: 4317
+      protocol: TCP
+    metrics:
+      port: 8888
+      protocol: TCP
+
+config:
+  name: collector-config
+
+resources:
+  limits:
+    memory: 200Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi

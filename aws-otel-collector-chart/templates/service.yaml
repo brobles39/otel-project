@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: aws-otel-collector
+  ports:
+    - name: http
+      port: {{ .Values.service.ports.http.port }}
+      protocol: {{ .Values.service.ports.http.protocol }}
+    - name: metrics
+      port: {{ .Values.service.ports.metrics.port }}
+      protocol: {{ .Values.service.ports.metrics.protocol }}
